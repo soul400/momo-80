@@ -1,3 +1,6 @@
+// تخزين الرقم الحالي المختار
+let currentNumber = null;
+
 // تحميل الأرقام من 1 إلى 80
 const numbersGrid = document.getElementById('numbers-grid');
 for (let i = 1; i <= 80; i++) {
@@ -12,11 +15,25 @@ for (let i = 1; i <= 80; i++) {
     numbersGrid.appendChild(numberDiv);
 }
 
+// إعادة تعيين الصور عند بدء سؤال جديد
+function resetImages() {
+    const questionImage = document.getElementById('question-image');
+    const answerImage = document.getElementById('answer-image');
+    questionImage.src = '';
+    answerImage.src = '';
+}
+
 // عرض نافذة السؤال
 function showQuestion(number) {
+    // حفظ الرقم الحالي
+    currentNumber = number;
+
+    // إعادة تعيين الصور
+    resetImages();
+
     const questionModal = document.getElementById('question-modal');
     const questionImage = document.getElementById('question-image');
-    questionImage.src = `questions/${number}.png`;
+    questionImage.src = `questions/${currentNumber}.png`;
     questionImage.style.maxWidth = '100%'; // ضبط حجم الصورة
     questionImage.style.height = 'auto';
     questionModal.style.display = 'flex';
@@ -24,6 +41,8 @@ function showQuestion(number) {
     // بدء العد التنازلي
     let timeLeft = 15;
     const timerCircle = document.getElementById('timer-circle');
+    timerCircle.textContent = timeLeft;
+
     const countdown = setInterval(() => {
         timeLeft--;
         timerCircle.textContent = timeLeft;
@@ -34,7 +53,7 @@ function showQuestion(number) {
     }, 1000);
 
     // إضافة فئة "selected" و"disabled" للرقم المختار
-    const selectedNumber = document.querySelector(`#numbers-grid div:nth-child(${number})`);
+    const selectedNumber = document.querySelector(`#numbers-grid div:nth-child(${currentNumber})`);
     selectedNumber.classList.add('selected', 'disabled');
     selectedNumber.style.backgroundColor = 'black';
     selectedNumber.style.color = 'white';
@@ -46,7 +65,8 @@ function showAnswer() {
     const questionModal = document.getElementById('question-modal');
     const answerModal = document.getElementById('answer-modal');
     const answerImage = document.getElementById('answer-image');
-    const currentNumber = parseInt(document.querySelector('#numbers-grid .selected').textContent);
+
+    // استخدام الرقم الحالي لعرض الإجابة الصحيحة
     answerImage.src = `answers/${currentNumber}.png`;
     answerImage.style.maxWidth = '100%'; // ضبط حجم الصورة
     answerImage.style.height = 'auto';
